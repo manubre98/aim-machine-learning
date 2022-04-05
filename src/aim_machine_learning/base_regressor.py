@@ -1,6 +1,9 @@
 ## DO NOT MODIFY
 
-from abc import abstractmethod, ABC #ABC è l'equivalente della classe object per la classi astratte, una classe astratta sarà figlia di ABC, così che possa utilizzare il decoratore abstractmethod
+from abc import abstractmethod, ABC # ABC è l'equivalente della classe object per la classi astratte, una classe
+# astratta sarà figlia di ABC, così che possa utilizzare il decoratore abstractmethod
+
+
 class Regressor(ABC):
     def __init__(self, **params):
         self.params = params 

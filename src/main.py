@@ -12,9 +12,8 @@ warnings.filterwarnings('ignore')
 
 from aim_machine_learning.base_regressor import Regressor
 
-import dataset_gen
+# import dataset_gen
 # questo script genera dei dataset nella cartella data/
-
 f= open("output/logs.txt","w+")
 f.close()
 f = open("output/logs.txt", "a") # salveremo tutto l'output in un file .txt
@@ -53,6 +52,8 @@ except NameError:
     print('abc non e\' una metrica supportata',file=f)
 print(eval_obj.set_metric('corr')(y_true,y_pred), file=f)
 
+#data_path = "data/dataset2.csv"
+
 # leggiamo un dataset usando pandas, dal percorso specificato in input allo script
 data = pd.read_csv(data_path, index_col=0)
 X = data.loc[:,~data.columns.isin(['y'])].values
@@ -83,6 +84,7 @@ y_pred = pw_model.predict(X)
 print(pw_model.evaluate(X, y, eval_obj.set_metric('mse')), file=f)
 print(pw_model.evaluate(X, y, eval_obj.set_metric('mae')), file=f)
 print(pw_model.evaluate(X, y, eval_obj.set_metric('corr')), file=f)
+
 
 # FATE IN MODO CHE IL CODICE SOPRA (LA PRIMA VERSIONE DI NeighborRegressor, giri ancora nello stesso modo senza dover modificare il codice).
 
@@ -164,6 +166,7 @@ my_model.fit(X, y)
 # daranno le stesse previsioni a parità di parametri?
 print(np.all(np.isclose(0,my_model.predict(X)-skl_model.predict(X),atol=1e-4)),file=f)
 # vorremmo utilizzare la nostra classe ParametersTuner sull'implementazione di sklearn di KNeighbors.
+
 try:
     tuner = ParametersTuner(model_class=KNeighborsRegressor, X=X, y=y, supported_eval_types=['kfold'], output_path='output/')
     best_params_skl = tuner.tune_parameters({'n_neighbors':np.arange(1,80)}, eval_type='kfold', eval_obj=eval_obj, **{'K':5, 'test_proportion':0.2})
@@ -215,6 +218,8 @@ if data_path in ['data/dataset3.csv','data/dataset5.csv'] :
     best_params2 = tuner.tune_parameters({'a':np.linspace(0,5,11),'b':np.linspace(0,5,11)}, eval_type='kfold',eval_obj=eval_obj, **{'K':5, 'test_proportion':0.2})
     print(best_params1, file=f)
     print(best_params2, file=f)
+
+
     # teniamo il bias in uno solo dei due
     # adesso vorremmo sommare le predizioni, come?
     multi_m_model = MultipleRegressor(**best_params1)+MultipleRegressor(**best_params2)
@@ -228,6 +233,7 @@ if data_path in ['data/dataset3.csv','data/dataset5.csv'] :
     print(multi_m_model.a, multi_m_model.b, file=f)
     y_pred = multi_m_model.predict(X)
     print(multi_m_model.evaluate(X, y, eval_obj.set_metric('mse')), file=f)
+
 
     tuner = ParametersTuner(model_class=MultipleRegressor, X=X, y=y, supported_eval_types=['kfold'], output_path='output/')
     best_params = tuner.tune_parameters({'a':[[i,j] for i in np.linspace(-1,2,11) for j in np.linspace(-1,2,11)],
