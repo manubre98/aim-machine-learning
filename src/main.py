@@ -52,8 +52,6 @@ except NameError:
     print('abc non e\' una metrica supportata',file=f)
 print(eval_obj.set_metric('corr')(y_true,y_pred), file=f)
 
-#data_path = "data/dataset2.csv"
-
 # leggiamo un dataset usando pandas, dal percorso specificato in input allo script
 data = pd.read_csv(data_path, index_col=0)
 X = data.loc[:,~data.columns.isin(['y'])].values
